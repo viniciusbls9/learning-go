@@ -1,20 +1,29 @@
 package main
 
-import (
-	"fmt"
-)
+import "github.com/labstack/echo/v4"
 
 type Car struct {
 	Name string
-	Model string
+	Price float64
 }
 
-func (c Car) Andar() {
-	fmt.Println("O carro ", c.Name, "está andando")
+// slice: like an infinit array
+var cars []Car
+
+func createCars () {
+	cars = append(cars, Car{Name: "Ferrari", Price: 100})
+	cars = append(cars, Car{Name: "Mercedes", Price: 200})
+	cars = append(cars, Car{Name: "Porsche", Price: 300})
 }
 
 func main() {
-	carro := Car{"Fusca", "VW"}
-	carro.Model = "Audi"
-	fmt.Println(carro.Model)
+	createCars()
+	e := echo.New()
+	e.GET("/cars", getCars)
+	e.Logger.Fatal(e.Start(":8080"))
+}
+
+
+func getCars(c echo.Context) error {
+	return c.JSON(200, cars)
 }
